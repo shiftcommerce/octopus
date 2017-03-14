@@ -21,10 +21,11 @@ module Octopus
     end
 
     def method_missing(method, *args, &block)
+      super if @ar_relation.private_methods.include?(method)
       if block
-        @ar_relation.public_send(method, *args, &block)
+        @ar_relation.send(method, *args, &block)
       else
-        run_on_shard { @ar_relation.public_send(method, *args) }
+        run_on_shard { @ar_relation.send(method, *args) }
       end
     end
 
